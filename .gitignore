@@ -1,0 +1,21 @@
+# 用户数据、密钥和本机缓存
+本地数据/
+本地朗读/
+**/*.dpapi.json
+**/*Key*.csv
+**/__pycache__/
+**/*.log
+
+# 可重新获取的本机依赖
+**/node_modules/
+**/运行环境/
+
+# 个人录音与本地发布物
+**/资源/录音/
+**/发布输出/
+
+# 校准与审计的中间产物
+outputs/*-audit.jsonl
+outputs/*-triage.jsonl
+outputs/*-calibration.jsonl
+**/*.tmp

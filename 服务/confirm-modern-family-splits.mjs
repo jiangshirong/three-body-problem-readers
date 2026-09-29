@@ -1,0 +1,21 @@
+// Independent second pass for proposed family splits. Disagreement keeps old family.
+import {readFile,writeFile,rename} from 'node:fs/promises';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {createDpapiSecretStore} from './reader-server.mjs';
+const project=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
+const first=JSON.parse(await readFile(path.join(project,'本地数据','modern-family-review-state.json'),'utf8'));
+const html=await readFile(path.join(project,'outputs','three-body-reader.html'),'utf8');
+const read=id=>{const at=html.indexOf(`id="${id}"`),start=html.indexOf('>',at)+1;return JSON.parse(html.slice(start,html.indexOf('</script>',start)));};
+const freq=read('wordFrequencyData'),families=read('wordFamiliesData');
+const proposed=Object.values(first.completed).flatMap(x=>Object.entries(x.clusters||{})).filter(([,clusters])=>clusters.length>1).map(([id,clusters])=>({id,forms:families.groups[id],first:clusters,strictGroups:Object.groupBy(families.groups[id],w=>freq.forms[w]?.strictId||w)}));
+const file=path.join(project,'本地数据','modern-family-confirmation-state.json');
+let state={version:1,sourceHash:first.hash,completed:{},failed:{},usage:{requests:0,input:0,output:0}};
+try{const old=JSON.parse(await readFile(file,'utf8'));if(old.sourceHash===first.hash)state={...state,...old};}catch{}
+const secret=(await createDpapiSecretStore(path.join(project,'本地数据','.reader-cache','reader-secrets.dpapi.json')).load()).deepseek;if(!secret)throw Error('未配置 DeepSeek');
+const system=`请独立复核英语词族拆分。现代英语里明确的屈折、前后缀派生、跨词性派生属于同族；不要把同根的现代派生链切得过细。正例：create/creation/creative/creativity；act/action/active/activity/react/reaction；image/imagine/imagination/imaginary/unimaginable；breath/breathe/breathing。仅有遥远词源联系或相似拼写不够，例如 cult/culture 可以分开。输入有 first（上一轮建议），但请独立判断。strictGroups 中同一个严格词形组不得拆开。若无法确信拆分正确，就保留整族。严格 JSON：{"groups":[{"id":"旧族头","clusters":[["词形", "词形"]]}]}。每个输入词形恰好出现一次。`;
+const normalize=clusters=>clusters.map(c=>[...c].sort().join('|')).sort().join(' / ');
+function validate(group,raw){const row=JSON.parse(raw)?.groups?.find(x=>x.id===group.id);if(!Array.isArray(row?.clusters))return null;const flat=row.clusters.flat();if(flat.length!==group.forms.length||new Set(flat).size!==flat.length||flat.some(w=>!group.forms.includes(w)))return null;const index=new Map(row.clusters.flatMap((c,i)=>c.map(w=>[w,i])));for(const forms of Object.values(group.strictGroups))if(new Set(forms.map(w=>index.get(w))).size>1)return null;return row.clusters.map(c=>[...c].sort());}
+let cursor=0,done=0,queue=Promise.resolve();const save=()=>queue=queue.then(async()=>{const tmp=file+'.'+process.pid+'.tmp';await writeFile(tmp,JSON.stringify(state,null,2)+'\n');await rename(tmp,file);});
+async function worker(){while(true){const i=cursor++;if(i>=proposed.length)return;if(state.completed[i]){done++;continue;}const group=proposed[i];try{const response=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',headers:{'Content-Type':'application/json',Authorization:`Bearer ${secret}`},body:JSON.stringify({model:'deepseek-flash',thinking:{type:'disabled'},temperature:0,response_format:{type:'json_object'},max_tokens:1900,messages:[{role:'system',content:system},{role:'user',content:JSON.stringify({groups:[group]})}]})});if(!response.ok)throw Error('HTTP '+response.status+' '+(await response.text()).slice(0,150));const body=await response.json(),raw=body.choices?.[0]?.message?.content||'',second=validate(group,raw);state.usage.requests++;state.usage.input+=body.usage?.prompt_tokens||0;state.usage.output+=body.usage?.completion_tokens||0;state.completed[i]={id:group.id,first:group.first,second,agree:Boolean(second&&normalize(second)===normalize(group.first)),raw,at:new Date().toISOString()};delete state.failed[i];}catch(e){state.failed[i]={id:group.id,error:String(e?.message||e)};}done++;await save();if(done%10===0||done===proposed.length)console.log(`复核 ${done}/${proposed.length}，失败 ${Object.keys(state.failed).length}`);}}
+console.log('待复核拆分',proposed.length);await Promise.all(Array.from({length:8},worker));await queue;console.log(JSON.stringify({reviewed:Object.keys(state.completed).length,agree:Object.values(state.completed).filter(x=>x.agree).length,failed:Object.keys(state.failed).length,usage:state.usage}));

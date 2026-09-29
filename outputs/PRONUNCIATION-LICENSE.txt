@@ -1,0 +1,69 @@
+American IPA subset for the local Three-Body reader
+
+Attribution: Wiktionary contributors.
+Structured extraction: Tatu Ylonen, Wiktextract and Kaikki.org.
+Source: https://kaikki.org/dictionary/English/
+Source dump: enwiktionary 2026-08-05, extraction 2026-08-28.
+Each retained record includes its original Wiktionary entry URL. Contributor
+history is available through that page's View history link.
+
+The Wiktionary-derived subset is licensed under Creative Commons
+Attribution-ShareAlike 4.0 International (CC BY-SA 4.0):
+https://creativecommons.org/licenses/by-sa/4.0/
+Legal code: https://creativecommons.org/licenses/by-sa/4.0/legalcode
+Copyright information: https://en.wiktionary.org/wiki/Wiktionary:Copyrights
+
+Modifications: selected book vocabulary and its dictionary headwords; retained
+only IPA sound records explicitly tagged US or General-American; restructured
+and deduplicated records; retained source spelling, IPA, tags and grammatical
+distinctions. Original IPA is retained as rawPronunciation; display IPA is
+normalized to learner dictionary conventions (learner-us-1). No spelling
+prediction or AI-generated pronunciation is used. CMUdict fallback records
+are separately identified and retain the accompanying BSD-2-Clause license.
+This modified data subset is distributed under CC BY-SA 4.0. When sharing it,
+retain attribution, source links, this notice, and the same license.
+
+An IPA shared by several accents is retained only when its SAME sound record
+explicitly includes US or General-American. An unrelated American recording,
+an American sense tag, North-America alone, untagged IPA or a UK-only sound
+does not qualify. Original source tags remain available for auditing.
+
+No Wiktionary audio is bundled. Manually retrieved recordings remain subject
+to the relevant provider's terms and recording-specific license. This notice
+does not license the EPUB book, ECDICT data, or third-party service outputs.
+
+
+CMUdict — source-preserving ARPAbet to learner IPA conversion.
+Copyright (C) 1993-2015 Carnegie Mellon University. All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+   The contents of this file are deemed to be source code.
+
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in
+   the documentation and/or other materials provided with the
+   distribution.
+
+This work was supported in part by funding from the Defense Advanced
+Research Projects Agency, the Office of Naval Research and the National
+Science Foundation of the United States of America, and by member
+companies of the Carnegie Mellon Sphinx Speech Consortium. We acknowledge
+the contributions of many volunteers to the expansion and improvement of
+this dictionary.
+
+THIS SOFTWARE IS PROVIDED BY CARNEGIE MELLON UNIVERSITY ``AS IS'' AND
+ANY EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL CARNEGIE MELLON UNIVERSITY
+NOR ITS EMPLOYEES BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.

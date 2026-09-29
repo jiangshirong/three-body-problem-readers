@@ -1,0 +1,9 @@
+{
+  "uniqueWords": 9564,
+  "wordOccurrences": 118694,
+  "exact": 9318,
+  "lemmaOnly": 1,
+  "missing": 245,
+  "exactCoveragePercent": 97.43,
+  "exactOccurrenceCoveragePercent": 98.89
+}
